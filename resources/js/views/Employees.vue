@@ -501,6 +501,7 @@ export default {
             this.formData.role_id = response.data.data.role_id;
             this.formData.designation_id = response.data.data.designation_id;
             this.formData.dept_id = response.data.data.dept_id;
+            this.formData.manager_id = response.data.data.manager_id ?? 0;
           } else {
             toastr.error(response.data.message);
           }

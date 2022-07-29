@@ -127,7 +127,7 @@ class UserController extends Controller
     public function getAllEmployees()
     {
         try {
-            $user = DB::table('users')->join('departments', 'users.dept_id', '=', 'departments.id')->join('designations', 'users.designation_id', '=', 'designations.id')->leftJoin("users AS usm", "users.manager_id", "=", "usm.id")->join("user_social_profiles", "user_social_profiles.user_id", "=", "users.id")->select("users.*", "departments.dept_name", "designations.title AS designation", "usm.name AS manager", "user_social_profiles.website", "user_social_profiles.github", "user_social_profiles.twitter", "user_social_profiles.linkedin", "user_social_profiles.facebook")->get();
+            $user = DB::table('users')->join('departments', 'users.dept_id', '=', 'departments.id')->join('designations', 'users.designation_id', '=', 'designations.id')->leftJoin("users AS usm", "users.manager_id", "=", "usm.id")->join("user_social_profiles", "user_social_profiles.user_id", "=", "users.id")->select("users.*", "departments.dept_name", "designations.title AS designation", "usm.name AS manager", "user_social_profiles.website", "user_social_profiles.github", "user_social_profiles.twitter", "user_social_profiles.linkedin", "user_social_profiles.facebook", "usm.id AS manager_id")->get();
             if ($user) {
                 return sendSuccessResponse($user, 'Data retrieved successfully', 200);
             } else {
