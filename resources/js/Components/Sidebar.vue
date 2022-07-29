@@ -22,7 +22,7 @@
                     </li>
                     <li class="nav-item">
                         <router-link  :to="{name : 'Employees'}" class="nav-link">
-                            <i class="nav-icon fas fa-th"></i>
+                            <i class="nav-icon fas fa-users"></i>
                             <p> Employees </p>
                         </router-link>
                     </li>
@@ -34,10 +34,7 @@
     </aside>
 </template>
 <script>
-export default {
-    
-}
+export default {};
 </script>
 <style lang="">
-    
 </style>

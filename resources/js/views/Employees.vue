@@ -153,11 +153,11 @@
                     <td>
                       <p
                         v-if="item.manager"
-                        class="p-1 bg-success rounded px-2"
+                        class="p-1 bg-success rounded px-2 m-0"
                       >
                         {{ item.manager }}
                       </p>
-                      <p v-else class="p-1 bg-danger rounded px-2">
+                      <p v-else class="p-1 bg-danger rounded px-2 m-0">
                         Not Assigned
                       </p>
                     </td>
