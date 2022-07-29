@@ -2,16 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Department;
-use App\Models\Designation;
 use App\Models\Role;
 use App\Models\User;
-use App\Models\UserSocialProfile;
+use App\Models\Department;
+use App\Models\Designation;
 use Illuminate\Http\Request;
+use App\Models\UserSocialProfile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use phpDocumentor\Reflection\Types\Null_;
 
 class UserController extends Controller
 {
@@ -47,6 +46,7 @@ class UserController extends Controller
 
     public function updateUser(Request $request, $id)
     {
+
         try {
             $user = User::whereId($id)->first();
             $website = UserSocialProfile::where("user_id", $id)->first();
@@ -55,28 +55,31 @@ class UserController extends Controller
                     "name" => $request->name,
                     "email" => $request->email,
                     "phone" => $request->phone,
-                    "address" => $request->address,
-                    "role_id" => $request->role,
-                    "designation_id" => $request->designation,
-                    "dept_id" => $request->department
-
+                    "address" => $request->address
 
                 ]);
-                // if ($request->role != 0 || $request->role != Null) {
-                //     $user->update([
-                //         "role_id" => $request->role
-                //     ]);
-                // }
-                // if ($request->designation != 0 || $request->designation != Null) {
-                //     $user->update([
-                //         "designation_id" => $request->designation
-                //     ]);
-                // }
-                // if ($request->department != 0 || $request->department != Null) {
-                //     $user->update([
-                //         "dept_id" => $request->department
-                //     ]);
-                // }
+
+                if ($request->role_id != 0 || $request->role_id != Null) {
+                    $user->update([
+                        "role_id" => $request->role_id
+                    ]);
+                }
+                if ($request->designation_id != 0 || $request->designation_id != Null) {
+                    $user->update([
+                        "designation_id" => $request->designation_id
+                    ]);
+                }
+                if ($request->dept_id != 0 || $request->dept_id != Null) {
+                    $user->update([
+                        "dept_id" => $request->dept_id
+                    ]);
+                }
+                if ($request->manager_id != 0 || $request->manager_id != Null) {
+                    $user->update([
+                        "manager_id" => $request->manager_id
+                    ]);
+                }
+
                 $website->update([
                     "website" => $request->website,
                     "github" => $request->github,
@@ -124,7 +127,7 @@ class UserController extends Controller
     public function getAllEmployees()
     {
         try {
-            $user = DB::table('users')->join('departments', 'users.dept_id', '=', 'departments.id')->join('designations', 'users.designation_id', '=', 'designations.id')->leftJoin("users AS usm", "users.manager_id", "=", "usm.id")->select("users.*", "departments.dept_name", "designations.title AS designation", "usm.name AS manager")->get();
+            $user = DB::table('users')->join('departments', 'users.dept_id', '=', 'departments.id')->join('designations', 'users.designation_id', '=', 'designations.id')->leftJoin("users AS usm", "users.manager_id", "=", "usm.id")->join("user_social_profiles", "user_social_profiles.user_id", "=", "users.id")->select("users.*", "departments.dept_name", "designations.title AS designation", "usm.name AS manager", "user_social_profiles.website", "user_social_profiles.github", "user_social_profiles.twitter", "user_social_profiles.linkedin", "user_social_profiles.facebook")->get();
             if ($user) {
                 return sendSuccessResponse($user, 'Data retrieved successfully', 200);
             } else {

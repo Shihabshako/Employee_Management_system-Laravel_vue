@@ -15,7 +15,10 @@
       <!-- Notifications Dropdown Menu -->
       <li class="nav-item dropdown">
         <!-- <span>Shihab</span> -->
-        <span class="nav-link" data-toggle="dropdown">
+        <span
+          class="nav-link d-flex justify-content-center align-items-center"
+          data-toggle="dropdown"
+        >
           <img
             src="assets/dist/img/avatar4.png"
             alt="AdminLTE Logo"

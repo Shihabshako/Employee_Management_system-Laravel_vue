@@ -114,6 +114,7 @@
                     <th>Designation</th>
                     <th>Manager</th>
                     <th>Address</th>
+                    <th>Social</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -149,8 +150,40 @@
                     <td>{{ item.phone }}</td>
                     <td>{{ item.dept_name }}</td>
                     <td>{{ item.designation }}</td>
-                    <td>{{ item.manager ? item.manager : "Not Assigned" }}</td>
+                    <td>
+                      <p
+                        v-if="item.manager"
+                        class="p-1 bg-success rounded px-2"
+                      >
+                        {{ item.manager }}
+                      </p>
+                      <p v-else class="p-1 bg-danger rounded px-2">
+                        Not Assigned
+                      </p>
+                    </td>
                     <td>{{ item.address }}</td>
+                    <td>
+                      <div
+                        class="d-flex flex-wrap align-items-start"
+                        style="gap: 10px"
+                      >
+                        <a :href="'//' + item.website" target="_blank"
+                          ><i class="fas fa-globe"></i
+                        ></a>
+                        <a :href="'//' + item.github" target="_blank"
+                          ><i class="fab fa-github"></i
+                        ></a>
+                        <a :href="'//' + item.twitter" target="_blank"
+                          ><i class="fab fa-twitter"></i
+                        ></a>
+                        <a :href="'//' + item.linkedin" target="_blank"
+                          ><i class="fab fa-linkedin"></i
+                        ></a>
+                        <a :href="'//' + item.facebook" target="_blank"
+                          ><i class="fab fa-facebook"></i
+                        ></a>
+                      </div>
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -171,7 +204,7 @@
     <div class="modal-dialog modal-lg modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h4 class="modal-title">Edit profile</h4>
+          <h4 class="modal-title">Edit Employee</h4>
           <button
             type="button"
             class="close"
@@ -286,7 +319,7 @@
                 </div>
                 <div class="col-4 form-group">
                   <label for="department">Department</label>
-                  <select class="form-control" v-model="formData.department">
+                  <select class="form-control" v-model="formData.dept_id">
                     <option value="0" selected disabled>
                       Assign Department
                     </option>
@@ -301,7 +334,10 @@
                 </div>
                 <div class="col-4 form-group">
                   <label for="designation">Designation</label>
-                  <select class="form-control" v-model="formData.designation">
+                  <select
+                    class="form-control"
+                    v-model="formData.designation_id"
+                  >
                     <option value="0" selected disabled>
                       Assign Designation
                     </option>
@@ -316,7 +352,7 @@
                 </div>
                 <div class="col-4 form-group">
                   <label for="role">Role</label>
-                  <select class="form-control" v-model="formData.role">
+                  <select class="form-control" v-model="formData.role_id">
                     <option value="0" selected disabled>Assign Role</option>
                     <option
                       v-for="item in roles"
@@ -324,6 +360,19 @@
                       :key="item.id"
                     >
                       {{ item.role_name }}
+                    </option>
+                  </select>
+                </div>
+                <div class="col-4 form-group">
+                  <label for="role">Manager</label>
+                  <select class="form-control" v-model="formData.manager_id">
+                    <option value="0" selected disabled>Assign Manager</option>
+                    <option
+                      v-for="item in managers"
+                      :value="item.id"
+                      :key="item.id"
+                    >
+                      {{ item.name }}
                     </option>
                   </select>
                 </div>
@@ -353,6 +402,7 @@ export default {
       roles: {},
       designations: {},
       departments: {},
+      managers: {},
       formData: {
         name: "",
         email: "",
@@ -363,9 +413,10 @@ export default {
         twitter: "",
         linkedin: "",
         facebook: "",
-        role: 0,
-        designation: 0,
-        department: 0,
+        role_id: 0,
+        designation_id: 0,
+        dept_id: 0,
+        manager_id: 0,
       },
     };
   },
@@ -432,6 +483,7 @@ export default {
         });
     },
     async editItem(id) {
+      this.managers = this.employeeList.filter((item) => item.id != id);
       await axios
         .get("/api/employees/" + id)
         .then((response) => {
@@ -446,9 +498,9 @@ export default {
             this.formData.twitter = response.data.data.twitter;
             this.formData.linkedin = response.data.data.linkedin;
             this.formData.facebook = response.data.data.facebook;
-            this.formData.role = response.data.data.role_id;
-            this.formData.designation = response.data.data.designation_id;
-            this.formData.department = response.data.data.dept_id;
+            this.formData.role_id = response.data.data.role_id;
+            this.formData.designation_id = response.data.data.designation_id;
+            this.formData.dept_id = response.data.data.dept_id;
           } else {
             toastr.error(response.data.message);
           }
@@ -461,7 +513,6 @@ export default {
       await axios
         .put("/api/update-user/" + this.formData.id, this.formData)
         .then((response) => {
-          console.log(response);
           if (response.data.success) {
             localStorage["loggedInUserEmail"] = this.formData.email;
             toastr.success("Data updated successfully");
