@@ -20,6 +20,8 @@ class UserController extends Controller
         try {
             $user = User::whereId($id)->first();
             if ($user) {
+                $user_social_profile = UserSocialProfile::where('user_id', $id)->first();
+                $user_social_profile->delete();
                 $user->delete();
                 return sendSuccessResponse([], 'Data deleted successfully');
             } else {

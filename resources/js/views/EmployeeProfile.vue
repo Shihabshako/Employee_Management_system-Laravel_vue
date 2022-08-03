@@ -1,10 +1,8 @@
-
-
 <template>
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
-    <ContentHeader title="Profile" />
+    <ContentHeader :title="employeeDetails.name + '\'s Profile'" />
     <!-- /.content-header -->
 
     <!-- Main content -->
@@ -25,12 +23,12 @@
                       width="110"
                     />
                     <div class="mt-3">
-                      <h4>{{ userData.name }}</h4>
+                      <h4>{{ employeeDetails.name }}</h4>
                       <p class="text-secondary mb-1">
-                        {{ userData.designation }}
+                        {{ employeeDetails.designation }}
                       </p>
                       <p class="text-muted font-size-sm">
-                        {{ userData.dept_name }}
+                        {{ employeeDetails.dept_name }}
                       </p>
                     </div>
                   </div>
@@ -54,7 +52,7 @@
                       <h6 class="mb-0">Full Name</h6>
                     </div>
                     <div class="col-sm-9 text-secondary">
-                      {{ userData.name }}
+                      {{ employeeDetails.name }}
                     </div>
                   </div>
                   <hr />
@@ -63,7 +61,7 @@
                       <h6 class="mb-0">Email</h6>
                     </div>
                     <div class="col-sm-9 text-secondary">
-                      {{ userData.email }}
+                      {{ employeeDetails.email }}
                     </div>
                   </div>
                   <hr />
@@ -72,7 +70,7 @@
                       <h6 class="mb-0">Phone</h6>
                     </div>
                     <div class="col-sm-9 text-secondary">
-                      {{ userData.phone }}
+                      {{ employeeDetails.phone }}
                     </div>
                   </div>
                   <hr />
@@ -81,7 +79,7 @@
                       <h6 class="mb-0">Manager</h6>
                     </div>
                     <div class="col-sm-9 text-secondary">
-                      {{ userData.manager }}
+                      {{ employeeDetails.manager }}
                     </div>
                   </div>
                   <hr />
@@ -90,7 +88,7 @@
                       <h6 class="mb-0">Address</h6>
                     </div>
                     <div class="col-sm-9 text-secondary">
-                      {{ userData.address }}
+                      {{ employeeDetails.address }}
                     </div>
                   </div>
                   <hr />
@@ -99,7 +97,7 @@
                       <h6 class="mb-0">Facebook</h6>
                     </div>
                     <div class="col-sm-9 text-secondary">
-                      {{ userData.facebook }}
+                      {{ employeeDetails.facebook }}
                     </div>
                   </div>
                   <hr />
@@ -108,7 +106,7 @@
                       <h6 class="mb-0">Github</h6>
                     </div>
                     <div class="col-sm-9 text-secondary">
-                      {{ userData.github }}
+                      {{ employeeDetails.github }}
                     </div>
                   </div>
                   <hr />
@@ -117,7 +115,7 @@
                       <h6 class="mb-0">Linkedin</h6>
                     </div>
                     <div class="col-sm-9 text-secondary">
-                      {{ userData.linkedin }}
+                      {{ employeeDetails.linkedin }}
                     </div>
                   </div>
                   <hr />
@@ -179,19 +177,6 @@
                   </div>
                   <div class="row mb-3">
                     <div class="col-sm-3">
-                      <h6 class="mb-0">Manager</h6>
-                    </div>
-                    <div class="col-sm-9 text-secondary">
-                      <input
-                        type="text"
-                        class="form-control"
-                        :value="userData.manager"
-                        disabled
-                      />
-                    </div>
-                  </div>
-                  <div class="row mb-3">
-                    <div class="col-sm-3">
                       <h6 class="mb-0">Address</h6>
                     </div>
                     <div class="col-sm-9 text-secondary">
@@ -200,6 +185,69 @@
                         class="form-control"
                         v-model="formData.address"
                       />
+                    </div>
+                  </div>
+                  <div class="row mb-3">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Department</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                      <select class="form-control" v-model="formData.dept_id">
+                        <option value="0" selected disabled>
+                          Assign Department
+                        </option>
+                        <option
+                          v-for="item in departments"
+                          :value="item.id"
+                          :key="item.id"
+                        >
+                          {{ item.dept_name }}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="row mb-3">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Designation</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                      <select
+                        class="form-control"
+                        v-model="formData.designation_id"
+                      >
+                        <option value="0" selected disabled>
+                          Assign Designation
+                        </option>
+                        <option
+                          v-for="item in designations"
+                          :value="item.id"
+                          :key="item.id"
+                        >
+                          {{ item.title }}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="row mb-3">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Manager</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                      <select
+                        class="form-control"
+                        v-model="formData.manager_id"
+                      >
+                        <option value="0" selected disabled>
+                          Assign Manager
+                        </option>
+                        <option
+                          v-for="item in managers"
+                          :value="item.id"
+                          :key="item.id"
+                        >
+                          {{ item.name }}
+                        </option>
+                      </select>
                     </div>
                   </div>
                   <div class="row mb-3">
@@ -251,47 +299,49 @@
 
   <!-- /.modal -->
 </template>
-<script>
-import axios from "axios";
-import ContentHeader from "../Components/ContentHeader.vue";
 
+<script>
+import { useRoute } from "vue-router";
+import ContentHeader from "../Components/ContentHeader.vue";
 export default {
   data() {
     return {
-      userData: {},
-      formData: {},
+      router: useRoute(),
+      employeeDetails: {},
+      roles: {},
+      designations: {},
+      departments: {},
+      managers: {},
       isEdit: false,
+      formData: {
+        name: "",
+        email: "",
+        phone: "",
+        address: "",
+        website: "",
+        github: "",
+        twitter: "",
+        linkedin: "",
+        facebook: "",
+        role_id: 0,
+        designation_id: 0,
+        dept_id: 0,
+        manager_id: 0,
+      },
     };
   },
+  mounted() {
+    this.getEmployeeDetails();
+    this.getDropdownValues();
+  },
   methods: {
-    async handleForm() {
+    async getEmployeeDetails() {
       await axios
-        .put("/api/update-user/" + this.userData.id, this.formData)
-        .then((response) => {
-          console.log(response);
-          if (response.data.success) {
-            localStorage["loggedInUserEmail"] = this.formData.email;
-            toastr.success("Data updated successfully");
-            this.isEdit = false;
-            this.getUserDetails();
-          } else {
-            toastr.error(response.data.message);
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
-    async getUserDetails() {
-      let data = {
-        email: localStorage.getItem("loggedInUserEmail"),
-      };
-
-      await axios
-        .post("/api/user-details", data)
+        .get("/api/employees/" + this.router.params.id)
         .then((response) => {
           if (response.data.success) {
-            this.userData = response.data.data;
+            this.employeeDetails = response.data.data;
+            this.formData.id = response.data.data.id;
             this.formData.name = response.data.data.name;
             this.formData.email = response.data.data.email;
             this.formData.phone = response.data.data.phone;
@@ -301,6 +351,12 @@ export default {
             this.formData.twitter = response.data.data.twitter;
             this.formData.linkedin = response.data.data.linkedin;
             this.formData.facebook = response.data.data.facebook;
+            this.formData.role_id = response.data.data.role_id;
+            this.formData.designation_id = response.data.data.designation_id;
+            this.formData.dept_id = response.data.data.dept_id;
+            this.formData.manager_id = response.data.data.manager_id ?? 0;
+          } else {
+            toastr.error(response.data.message);
           }
         })
         .catch((error) => {
@@ -314,13 +370,56 @@ export default {
         this.isEdit = false;
       }
     },
-  },
-  async mounted() {
-    await this.getUserDetails();
+    async getDropdownValues() {
+      await axios
+        .get("/api/dropdown-values/")
+        .then((response) => {
+          if (response.data.success) {
+            this.roles = response.data.data.roles;
+            this.designations = response.data.data.designations;
+            this.departments = response.data.data.departments;
+          } else {
+            toastr.error(response.data.message);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+
+      await axios
+        .get("/api/employees")
+        .then((response) => {
+          response = response.data.data;
+          this.managers = response.filter(
+            (item) => item.id != this.router.params.id
+          );
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    async handleForm() {
+      await axios
+        .put("/api/update-user/" + this.formData.id, this.formData)
+        .then((response) => {
+          if (response.data.success) {
+            localStorage["loggedInUserEmail"] = this.formData.email;
+            toastr.success("Data updated successfully");
+            this.isEdit = false;
+            this.getEmployeeDetails();
+          } else {
+            toastr.error(response.data.message);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
   },
   components: { ContentHeader },
 };
 </script>
+
 <style scoped>
 .main-body {
   padding: 15px;

@@ -26,6 +26,7 @@ export default {
   data() {
     return {
       details: {},
+      loading: true,
     };
   },
   async mounted() {

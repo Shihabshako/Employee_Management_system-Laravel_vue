@@ -5,6 +5,7 @@ import Login from "../views/Login.vue";
 import NotFound from "../Components/NotFound.vue";
 import Profile from "../views/Profile.vue";
 import ChangePassword from "../views/ChangePassword.vue";
+import EmployeeProfile from "../views/EmployeeProfile.vue";
 
 const routes = [
     {
@@ -36,6 +37,11 @@ const routes = [
         path: "/change-password",
         name: "Change Password",
         component: ChangePassword,
+    },
+    {
+        path: "/employee-profile/:id",
+        name: "Employee Profile",
+        component: EmployeeProfile,
     },
 
     //catchall 404
