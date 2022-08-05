@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\TypeOfLeaveController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,6 +32,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete("/employees/{id}", [UserController::class, "destroy"]);
     Route::get("/cards-count", [UserController::class, "cardsValueCount"]);
     Route::get("/dropdown-values", [UserController::class, "allDropdownValues"]);
+
+    Route::apiResource("/type-of-leaves", TypeOfLeaveController::class);
 
     // Route::apiResource("/roles", [RoleController::class]);
     // Route::apiResource("/departments", [RoleController::class]);

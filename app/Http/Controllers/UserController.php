@@ -89,7 +89,7 @@ class UserController extends Controller
                     "linkedin" => $request->linkedin,
                     "facebook" => $request->facebook,
                 ]);
-                $user = DB::table('users')->join('departments', 'users.dept_id', '=', 'departments.id')->join('designations', 'users.designation_id', '=', 'designations.id')->leftJoin("users AS usm", "users.manager_id", "=", "usm.id")->join("user_social_profiles", "user_social_profiles.user_id", "=", "users.id")->select("users.*", "departments.dept_name", "designations.title AS designation", "usm.name AS manager", "user_social_profiles.website", "user_social_profiles.github", "user_social_profiles.twitter", "user_social_profiles.linkedin", "user_social_profiles.facebook")->where("users.email", $request->email)->first();
+                $user = DB::table('users')->join('departments', 'users.dept_id', '=', 'departments.id')->join('designations', 'users.designation_id', '=', 'designations.id')->leftJoin("users AS usm", "users.manager_id", "=", "usm.id")->join("user_social_profiles", "user_social_profiles.user_id", "=", "users.id")->join('roles', 'users.role_id', '=', 'roles.id')->select("users.*", "departments.dept_name", "designations.title AS designation", "usm.name AS manager", "roles.role_name", "user_social_profiles.website", "user_social_profiles.github", "user_social_profiles.twitter", "user_social_profiles.linkedin", "user_social_profiles.facebook")->where("users.email", $request->email)->first();
                 return sendSuccessResponse($user, 'Login successful', 200);
             } else {
                 return sendErrorResponse('Email and password does not match with our records', 422);
@@ -144,7 +144,7 @@ class UserController extends Controller
     public function getSingleEmployees($id)
     {
         try {
-            $user = DB::table('users')->join('departments', 'users.dept_id', '=', 'departments.id')->join('designations', 'users.designation_id', '=', 'designations.id')->leftJoin("users AS usm", "users.manager_id", "=", "usm.id")->join("user_social_profiles", "user_social_profiles.user_id", "=", "users.id")->select("users.*", "departments.dept_name", "designations.title AS designation", "usm.name AS manager", "user_social_profiles.website", "user_social_profiles.github", "user_social_profiles.twitter", "user_social_profiles.linkedin", "user_social_profiles.facebook")->where("users.id", "=", $id)->first();
+            $user = DB::table('users')->join('departments', 'users.dept_id', '=', 'departments.id')->join('designations', 'users.designation_id', '=', 'designations.id')->leftJoin("users AS usm", "users.manager_id", "=", "usm.id")->join("user_social_profiles", "user_social_profiles.user_id", "=", "users.id")->join("roles", "users.role_id", "=", "roles.id")->select("users.*", "departments.dept_name", "designations.title AS designation", "roles.role_name", "usm.name AS manager", "user_social_profiles.website", "user_social_profiles.github", "user_social_profiles.twitter", "user_social_profiles.linkedin", "user_social_profiles.facebook")->where("users.id", "=", $id)->first();
             if ($user) {
                 return sendSuccessResponse($user, 'Data retrieved successfully', 200);
             } else {

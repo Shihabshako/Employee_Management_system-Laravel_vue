@@ -85,10 +85,15 @@ export default {
       // await axios.get('/sanctum/csrf-cookie')
       await axios
         .post("/api/login", this.formData)
-        .then((response) => {
+        .then(async (response) => {
           if (response.data.success) {
             localStorage["loggedInUserEmail"] = response.data.data.email;
             localStorage["loggedInUserToken"] = response.data.token;
+            localStorage["loggedInUserName"] = response.data.data.name;
+            localStorage["loggedInUserRole"] = response.data.data.role_name;
+            localStorage["isLoggedInUserManager"] =
+              response.data.data.isManager;
+
             this.router.push({ name: "Home" });
           } else {
             toastr.error(response.data.message);
