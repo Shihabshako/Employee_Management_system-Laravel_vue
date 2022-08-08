@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ApplyLeaveController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\LoginController;
@@ -34,6 +35,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get("/dropdown-values", [UserController::class, "allDropdownValues"]);
 
     Route::apiResource("/type-of-leaves", TypeOfLeaveController::class);
+    Route::apiResource("/apply-leaves", ApplyLeaveController::class);
 
     // Route::apiResource("/roles", [RoleController::class]);
     // Route::apiResource("/departments", [RoleController::class]);

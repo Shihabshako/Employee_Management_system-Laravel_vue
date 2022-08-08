@@ -15,6 +15,23 @@ import Footer from "./Components/Footer.vue";
 import { useRouter } from "vue-router";
 
 export default {
+  data() {
+    return {
+      message: [],
+    };
+  },
+  mounted() {
+    Pusher.logToConsole = true;
+
+    var pusher = new Pusher("b2bc2a2ebfc6eadc1101", {
+      cluster: "ap2",
+    });
+
+    var channel = pusher.subscribe("my-channel");
+    channel.bind("my-event", function (data) {
+      this.messages.push(JSON.stringify(data));
+    });
+  },
   methods: {
     isUrlLogin() {
       const router = useRouter();
@@ -42,6 +59,28 @@ export default {
       }
 
       return status;
+    },
+    listenForChanges() {
+      //   Echo.channel("applyLeaveNotification").listen(
+      //     "NotificationPublished",
+      //     (post) => {
+      //       if (!("Notification" in window)) {
+      //         alert("Web Notification is not supported");
+      //         return;
+      //       }
+      //       Notification.requestPermission((permission) => {
+      //         let notification = new Notification("Awesome Website", {
+      //           body: post.message,
+      //           icon: "https://pusher.com/static_logos/320x320.png", // optional image url
+      //         });
+      //         // link to page on clicking the notification
+      //         notification.onclick = () => {
+      //           window.open(window.location.href);
+      //         };
+      //       });
+      //     }
+      //   );
+      // },
     },
   },
   components: { Sidebar, Navbar, Footer },
