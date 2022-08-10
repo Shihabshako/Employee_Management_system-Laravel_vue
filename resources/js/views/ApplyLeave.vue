@@ -132,6 +132,7 @@ export default {
       await axios
         .post("/api/apply-leaves", this.formData)
         .then((response) => {
+          console.log(response);
           if (response.data.success) {
             toastr.success("Applied for leave successful");
           }

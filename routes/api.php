@@ -36,6 +36,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::apiResource("/type-of-leaves", TypeOfLeaveController::class);
     Route::apiResource("/apply-leaves", ApplyLeaveController::class);
+    Route::post("/apply-leaves-per-manager", [ApplyLeaveController::class, "applicationPerManager"]);
+    Route::post("/approve-application-by-manager", [ApplyLeaveController::class, "approveApplicationByManager"]);
 
     // Route::apiResource("/roles", [RoleController::class]);
     // Route::apiResource("/departments", [RoleController::class]);

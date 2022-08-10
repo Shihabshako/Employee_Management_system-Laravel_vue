@@ -10,6 +10,7 @@ import ApplyLeave from "../views/ApplyLeave.vue";
 import ApproveLeave from "../views/ApproveLeave.vue";
 import LeaveStatus from "../views/LeaveStatus.vue";
 import NoPermission from "../views/NoPermission.vue";
+import ApplicationDetails from "../views/ApplicationDetails.vue";
 
 var role = localStorage.getItem("loggedInUserRole");
 var isManager =
@@ -64,6 +65,11 @@ const routes = [
                 next({ name: "No permission" });
             }
         },
+    },
+    {
+        path: "/application-details/:id",
+        name: "Application Details",
+        component: ApplicationDetails,
     },
     {
         path: "/apply-leave",
