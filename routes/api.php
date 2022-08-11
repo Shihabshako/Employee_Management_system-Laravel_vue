@@ -4,6 +4,7 @@ use App\Http\Controllers\ApplyLeaveController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\TypeOfLeaveController;
 
@@ -37,9 +38,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource("/type-of-leaves", TypeOfLeaveController::class);
     Route::apiResource("/apply-leaves", ApplyLeaveController::class);
     Route::post("/apply-leaves-per-manager", [ApplyLeaveController::class, "applicationPerManager"]);
-    Route::post("/approve-application-by-manager", [ApplyLeaveController::class, "approveApplicationByManager"]);
+    Route::get("/approve-application-by-manager/{id}", [ApplyLeaveController::class, "approveApplicationByManager"]);
+    Route::get("/decline-application-by-manager/{id}", [ApplyLeaveController::class, "declineApplicationByManager"]);
+    Route::get("/approve-application-by-administration/{id}", [ApplyLeaveController::class, "approveApplicationByAdministration"]);
+    Route::get("/decline-application-by-administration/{id}", [ApplyLeaveController::class, "declineApplicationByAdministration"]);
 
-    // Route::apiResource("/roles", [RoleController::class]);
-    // Route::apiResource("/departments", [RoleController::class]);
-    // Route::apiResource("/designations", [RoleController::class]);
+    Route::get("/notification-list/{id}",  [NotificationController::class, "notificationPerUser"]);
+    Route::get("/mark-notification-read/{id}",  [NotificationController::class, "notificationMarkRead"]);
 });

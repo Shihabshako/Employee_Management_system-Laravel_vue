@@ -13,25 +13,14 @@ import Navbar from "../js/Components/Navbar.vue";
 import Sidebar from "./Components/Sidebar.vue";
 import Footer from "./Components/Footer.vue";
 import { useRouter } from "vue-router";
+import Echo from "laravel-echo";
+import Pusher from "pusher-js";
 
 export default {
   data() {
     return {
       message: [],
     };
-  },
-  mounted() {
-    Pusher.logToConsole = true;
-
-    var pusher = new Pusher("6479e1dcb3fb77734574", {
-      cluster: "ap1",
-    });
-
-    var channel = pusher.subscribe("my-channel");
-    channel.bind("my-event", function (data) {
-      // this.messages.push(JSON.stringify(data));
-      alert(JSON.stringify(data));
-    });
   },
   methods: {
     isUrlLogin() {
@@ -64,6 +53,23 @@ export default {
         window.axios.defaults.headers.common[
           "Authorization"
         ] = `Bearer ${access_token}`;
+
+        window.Pusher = Pusher;
+
+        window.Echo = new Echo({
+          broadcaster: "pusher",
+          key: import.meta.env.VITE_PUSHER_APP_KEY,
+          cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
+          wsHost: window.location.hostname,
+          wsPort: 6001,
+          forceTLS: false,
+          disableStats: true,
+          auth: {
+            headers: {
+              Authorization: "Bearer " + access_token,
+            },
+          },
+        });
       }
 
       return status;

@@ -16,33 +16,27 @@
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
       <!-- Notifications Dropdown Menu -->
-      <li class="nav-item dropdown">
+      <li class="nav-item dropdown" @click="markRead()">
         <a class="nav-link" data-toggle="dropdown" href="#">
           <i class="far fa-bell fa-lg"></i>
-          <span class="badge badge-danger navbar-badge">15</span>
+          <span class="badge badge-danger navbar-badge badge-larger">{{
+            unreadNotificationCount
+          }}</span>
         </a>
         <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-          <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item"> 4 new messages </a>
-          <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item"> 8 friend requests </a>
-          <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item"> 3 new reports </a>
-          <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item"> 4 new messages </a>
-          <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item"> 8 friend requests </a>
-          <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item"> 3 new reports </a>
-          <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item"> 4 new messages </a>
-          <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item"> 8 friend requests </a>
-          <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item"> 3 new reports </a>
-          <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item"> 3 new reports </a>
-          <div class="dropdown-divider"></div>
+          <router-link
+            :to="{
+              name: 'Application Details',
+              params: { id: item.applicationId },
+            }"
+            v-for="(item, index) in notificationList"
+            :key="index"
+          >
+            <span class="dropdown-item">
+              {{ item.name + " " + item.message }}
+            </span>
+            <div class="dropdown-divider"></div>
+          </router-link>
         </div>
       </li>
 
@@ -85,6 +79,9 @@ export default {
       router: useRouter(),
       access_token: localStorage.getItem("loggedInUserToken"),
       userName: localStorage.getItem("loggedInUserName"),
+      userId: localStorage.getItem("loggedInUserId"),
+      notificationList: [],
+      unreadNotificationCount: 0,
     };
   },
   methods: {
@@ -106,8 +103,66 @@ export default {
           console.log("error => ", error);
         });
     },
+    async getNotifications() {
+      await axios
+        .get("/api/notification-list/" + this.userId)
+        .then((response) => {
+          if (response.data.success) {
+            response = response.data.data;
+            response.forEach((item) => {
+              let data = JSON.parse(item.data);
+              data["read_at"] = item.read_at;
+              this.notificationList.push(data);
+            });
+            this.unreadNotifications();
+          } else {
+            toastr.info(response.data.message);
+          }
+        })
+        .catch((error) => {
+          console.log("error => ", error);
+        });
+    },
+    async markRead() {
+      await axios
+        .get("/api/mark-notification-read/" + this.userId)
+        .then((response) => {
+          if (response.data.success) {
+            this.notificationList.map((item) => (item.read_at = Date.now()));
+          }
+          this.unreadNotifications();
+        })
+        .catch((error) => {
+          console.log("error => ", error);
+        });
+    },
+    unreadNotifications() {
+      let result = this.notificationList.filter((item) => item.read_at == null);
+      this.unreadNotificationCount = result.length;
+    },
+  },
+  mounted() {
+    this.getNotifications();
+    Echo.private("App.Models.User." + this.userId).notification(
+      (notification) => {
+        alert("you have a new notification");
+        let data = notification;
+        data["read_at"] = null;
+        this.notificationList.push(data);
+        this.unreadNotifications();
+        console.log("new notification arrived", notification);
+      }
+    );
   },
 };
 </script>
-<style lang="">
+
+<style  scoped>
+.badge-larger {
+  font-size: 15px;
+}
+.fa-lg {
+  font-size: 25px !important;
+  line-height: 35px !important;
+}
 </style>

@@ -123,27 +123,31 @@
                       <span
                         v-if="item.approved_by_manager == 0"
                         class="badge-warning p-1 rounded"
-                        >review</span
+                        >Reviewing</span
                       >
                       <span
                         v-else-if="item.approved_by_manager == 1"
-                        class="badge-danger p-1 rounded"
-                        >review</span
+                        class="badge-success p-1 rounded"
+                        >Approved</span
                       >
-                      <span v-else class="badge-success p-1 rounded">Yes</span>
+                      <span v-else class="badge-danger p-1 rounded"
+                        >Declined</span
+                      >
                     </td>
                     <td>
                       <span
                         v-if="item.approved_by_administration == 0"
                         class="badge-warning p-1 rounded"
-                        >review</span
+                        >Reviewing</span
                       >
                       <span
                         v-else-if="item.approved_by_administration == 1"
-                        class="badge-danger p-1 rounded"
-                        >review</span
+                        class="badge-success p-1 rounded"
+                        >Approved</span
                       >
-                      <span v-else class="badge-success p-1 rounded">Yes</span>
+                      <span v-else class="badge-danger p-1 rounded"
+                        >Declined</span
+                      >
                     </td>
 
                     <td>
@@ -203,6 +207,17 @@ export default {
       if (role == "Engineers" && isManager) {
         await axios
           .post("/api/apply-leaves-per-manager", { email: email })
+          .then((response) => {
+            this.applicationList = response.data.data;
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+
+      if (role == "HR" || role == "Admin") {
+        await axios
+          .get("/api/apply-leaves")
           .then((response) => {
             this.applicationList = response.data.data;
           })

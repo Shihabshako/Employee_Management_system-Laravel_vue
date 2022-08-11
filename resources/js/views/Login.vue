@@ -90,6 +90,7 @@ export default {
             localStorage["loggedInUserEmail"] = response.data.data.email;
             localStorage["loggedInUserToken"] = response.data.token;
             localStorage["loggedInUserName"] = response.data.data.name;
+            localStorage["loggedInUserId"] = response.data.data.id;
             localStorage["loggedInUserRole"] = response.data.data.role_name;
             localStorage["isLoggedInUserManager"] =
               response.data.data.isManager;

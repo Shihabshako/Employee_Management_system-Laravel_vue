@@ -5,8 +5,11 @@ namespace App\Http\Controllers;
 use App\Events\NotificationPublished;
 use App\Models\ApplyLeave;
 use App\Models\User;
+use App\Notifications\ApplyLeave as NotificationsApplyLeave;
+use App\Notifications\NotifyAdministration;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 
 // use App\Events\NotificationPublished;
 
@@ -61,7 +64,10 @@ class ApplyLeaveController extends Controller
                 "details" => $request->details,
             ]);
 
-            event(new NotificationPublished("shihab jamil"));
+            $manager = User::where("id", $user->manager_id)->first();
+            //notifying manager
+            Notification::send($manager, new NotificationsApplyLeave($user->name, $applyLeave->id));
+
 
             return sendSuccessResponse($applyLeave, 'Data stored successfully', 200);
         } catch (\Throwable $e) {
@@ -78,7 +84,7 @@ class ApplyLeaveController extends Controller
     public function show($id)
     {
         try {
-            $applyLeave = DB::table('apply_leaves')->join("users", "apply_leaves.user_id", "=", "users.id")->select("apply_leaves.*", "users.name")->where("apply_leaves.id", $id)->first();
+            $applyLeave = DB::table('apply_leaves')->join("users", "apply_leaves.user_id", "=", "users.id")->select("apply_leaves.*", "users.name", "type_of_leaves.title")->where("apply_leaves.id", $id)->join("type_of_leaves", "apply_leaves.type_of_leave_id", "=", "type_of_leaves.id")->first();
             if ($applyLeave) {
                 return sendSuccessResponse($applyLeave, 'Data retrieved successfully', 200);
             } else {
@@ -139,13 +145,77 @@ class ApplyLeaveController extends Controller
         }
     }
 
-    public function approveApplicationByManager(Request $request)
+    public function approveApplicationByManager($id)
     {
         try {
-            $application = ApplyLeave::query()->whereId($request->id)->first();
+            $application = ApplyLeave::query()->whereId($id)->first();
             if ($application) {
                 $application->update([
                     "approved_by_manager" => 1
+                ]);
+                $administration = User::all()->filter(function ($user) {
+                    if ($user->role_id != 3) {
+                        return $user;
+                    }
+                });
+                $user = User::whereId($application->user_id)->first();
+
+                //notify administration 
+                Notification::send($administration, new NotifyAdministration($user->name, $application->id));
+
+
+
+
+                return sendSuccessResponse($application, 'Data retrieved successfully', 200);
+            } else {
+                return sendErrorResponse('Database error', 422);
+            }
+        } catch (\Throwable $e) {
+            return sendErrorResponse('Database Error!', $e->getMessage(), 500);
+        }
+    }
+
+    public function declineApplicationByManager($id)
+    {
+        try {
+            $application = ApplyLeave::query()->whereId($id)->first();
+            if ($application) {
+                $application->update([
+                    "approved_by_manager" => 3
+                ]);
+                return sendSuccessResponse($application, 'Data retrieved successfully', 200);
+            } else {
+                return sendErrorResponse('Database error', 422);
+            }
+        } catch (\Throwable $e) {
+            return sendErrorResponse('Database Error!', $e->getMessage(), 500);
+        }
+    }
+
+    public function approveApplicationByAdministration($id)
+    {
+        try {
+            $application = ApplyLeave::query()->whereId($id)->first();
+            if ($application) {
+                $application->update([
+                    "approved_by_administration" => 1
+                ]);
+                return sendSuccessResponse($application, 'Data retrieved successfully', 200);
+            } else {
+                return sendErrorResponse('Database error', 422);
+            }
+        } catch (\Throwable $e) {
+            return sendErrorResponse('Database Error!', $e->getMessage(), 500);
+        }
+    }
+
+    public function declineApplicationByAdministration($id)
+    {
+        try {
+            $application = ApplyLeave::query()->whereId($id)->first();
+            if ($application) {
+                $application->update([
+                    "approved_by_administration" => 3
                 ]);
                 return sendSuccessResponse($application, 'Data retrieved successfully', 200);
             } else {

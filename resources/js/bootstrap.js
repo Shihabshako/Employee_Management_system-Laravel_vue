@@ -24,7 +24,11 @@ import Echo from "laravel-echo";
 
 import Pusher from "pusher-js";
 window.Pusher = Pusher;
+let access_token = localStorage.getItem("loggedInUserToken");
 
+// window.axios.defaults.headers.common[
+//     "Authorization"
+// ] = `Bearer ${access_token}`;
 // window.Echo = new Echo({
 //     broadcaster: "pusher",
 //     key: import.meta.env.VITE_PUSHER_APP_KEY,
@@ -37,9 +41,17 @@ window.Pusher = Pusher;
 //     enabledTransports: ["ws", "wss"],
 // });
 
-window.Echo = new Echo({
-    broadcaster: "pusher",
-    key: import.meta.env.VITE_PUSHER_APP_KEY,
-    cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
-    encrypted: true,
-});
+// window.Echo = new Echo({
+//     broadcaster: "pusher",
+//     key: import.meta.env.VITE_PUSHER_APP_KEY,
+//     cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
+//     wsHost: window.location.hostname,
+//     wsPort: 6001,
+//     forceTLS: false,
+//     disableStats: true,
+//     auth: {
+//         headers: {
+//             Authorization: "Bearer " + access_token,
+//         },
+//     },
+// });
