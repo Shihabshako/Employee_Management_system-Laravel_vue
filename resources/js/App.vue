@@ -3,7 +3,7 @@
     <Navbar v-if="!isUrlLogin()" />
     <Sidebar v-if="!isUrlLogin()" />
 
-    <router-view />
+    <router-view :key="$route.path" />
 
     <Footer v-if="!isUrlLogin()" />
   </div>
@@ -38,6 +38,7 @@ export default {
         !localStorage.getItem("loggedInUserEmail") &&
         router.currentRoute.value.name != "Login"
       ) {
+        status = true;
         router.push({ name: "Login" });
       }
 
@@ -45,6 +46,7 @@ export default {
         localStorage.getItem("loggedInUserEmail") &&
         router.currentRoute.value.name == "Login"
       ) {
+        status = true;
         router.push({ name: "Home" });
       }
 

@@ -24,6 +24,10 @@
           }}</span>
         </a>
         <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+          <span v-if="notificationList.length < 1" class="dropdown-item">
+            No new Notification
+          </span>
+
           <router-link
             :to="{
               name: 'Application Details',
@@ -47,7 +51,7 @@
           data-toggle="dropdown"
         >
           <img
-            src="assets/dist/img/avatar4.png"
+            src="/assets/dist/img/avatar4.png"
             alt="AdminLTE Logo"
             class="brand-image img-circle elevation-3"
             style="width: 33px; cursor: pointer"
@@ -94,6 +98,9 @@ export default {
             localStorage.removeItem("loggedInUserEmail");
             localStorage.removeItem("loggedInUserToken");
             localStorage.removeItem("loggedInUserName");
+            localStorage.removeItem("loggedInUserId");
+            localStorage.removeItem("loggedInUserRole");
+            localStorage.removeItem("isLoggedInUserManager");
             this.router.push({ name: "Login" });
           } else {
             toastr.info(response.data.message);

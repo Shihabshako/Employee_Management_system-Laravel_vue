@@ -3,12 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Events\NotificationPublished;
+use App\Mail\InformAdministration;
 use App\Models\ApplyLeave;
 use App\Models\User;
 use App\Notifications\ApplyLeave as NotificationsApplyLeave;
 use App\Notifications\NotifyAdministration;
+use App\Notifications\NotifyApplier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
 
 // use App\Events\NotificationPublished;
@@ -163,6 +166,8 @@ class ApplyLeaveController extends Controller
                 //notify administration 
                 Notification::send($administration, new NotifyAdministration($user->name, $application->id));
 
+                //mail to admin
+                Mail::to($administration)->send(new InformAdministration($user->name, 'approved', $application->id));
 
 
 
@@ -200,6 +205,12 @@ class ApplyLeaveController extends Controller
                 $application->update([
                     "approved_by_administration" => 1
                 ]);
+
+                $user = User::whereId($application->user_id)->first();
+
+                //notify administration 
+                Notification::send($user, new NotifyApplier('', $application->id, 'Application Approved'));
+
                 return sendSuccessResponse($application, 'Data retrieved successfully', 200);
             } else {
                 return sendErrorResponse('Database error', 422);
@@ -217,6 +228,12 @@ class ApplyLeaveController extends Controller
                 $application->update([
                     "approved_by_administration" => 3
                 ]);
+
+                $user = User::whereId($application->user_id)->first();
+
+                //notify administration 
+                Notification::send($user, new NotifyApplier('', $application->id, 'Application Approved'));
+
                 return sendSuccessResponse($application, 'Data retrieved successfully', 200);
             } else {
                 return sendErrorResponse('Database error', 422);

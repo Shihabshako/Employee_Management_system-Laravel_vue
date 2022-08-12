@@ -47,8 +47,8 @@
                         <p>{{ details.details }}</p>
                         <p></p>
                         <div v-if="checkPermission() " class="row d-flex justify-content-end" style="gap : 10px">
-                            <button class="btn btn-danger"  @click="declineApplications()" >Deny</button>
-                            <button class="btn btn-success" @click="approveApplications()" >Approve</button>
+                            <button class="btn btn-danger"  @click="declineApplications()"  >Decline</button>
+                            <button class="btn btn-success" @click="approveApplications()"  >Approve</button>
                         </div>
                     </div>
                     
@@ -59,12 +59,13 @@
     </div>
 </template>
 <script>
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import ContentHeader from "../Components/ContentHeader.vue";
 export default {
   data() {
     return {
-      router: useRoute(),
+      router: useRouter(),
+      route: useRoute(),
       details: {},
     };
   },
@@ -74,7 +75,7 @@ export default {
   methods: {
     async getApplicationDetails() {
       await axios
-        .get("/api/apply-leaves/" + this.router.params.id)
+        .get("/api/apply-leaves/" + this.route.params.id)
         .then((response) => {
           this.details = response.data.data;
         })
@@ -98,7 +99,7 @@ export default {
 
       if (role == "Engineers" && isManager) {
         await axios
-          .get("/api/approve-application-by-manager/" + this.router.params.id)
+          .get("/api/approve-application-by-manager/" + this.route.params.id)
           .then((response) => {
             console.log(response);
             if (response.data.success) {
@@ -116,8 +117,7 @@ export default {
       if (role == "HR" || role == "Admin") {
         await axios
           .get(
-            "/api/approve-application-by-administration/" +
-              this.router.params.id
+            "/api/approve-application-by-administration/" + this.route.params.id
           )
           .then((response) => {
             if (response.data.success) {
@@ -139,7 +139,7 @@ export default {
 
       if (role == "Engineers" && isManager) {
         await axios
-          .get("/api/decline-application-by-manager/" + this.router.params.id)
+          .get("/api/decline-application-by-manager/" + this.route.params.id)
           .then((response) => {
             if (response.data.success) {
               toastr.success("Application has been declined");
@@ -156,8 +156,7 @@ export default {
       if (role == "HR" || role == "Admin") {
         await axios
           .get(
-            "/api/decline-application-by-administration/" +
-              this.router.params.id
+            "/api/decline-application-by-administration/" + this.route.params.id
           )
           .then((response) => {
             if (response.data.success) {

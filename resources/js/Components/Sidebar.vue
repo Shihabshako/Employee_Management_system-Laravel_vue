@@ -4,7 +4,7 @@
     <!-- Brand Logo -->
     <router-link :to="{ name: 'Home' }" class="brand-link">
       <img
-        src="assets/dist/img/AdminLTELogo.png"
+        src="/assets/dist/img/AdminLTELogo.png"
         alt="AdminLTE Logo"
         class="brand-image img-circle elevation-3"
         style="opacity: 0.8"

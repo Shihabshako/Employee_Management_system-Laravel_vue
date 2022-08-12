@@ -4,10 +4,11 @@ namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class NotifyAdministration extends Notification
+class NotifyApplier extends Notification
 {
     use Queueable;
 
@@ -18,11 +19,13 @@ class NotifyAdministration extends Notification
      */
     public $application_id;
     public $userName;
+    public $message;
 
-    public function __construct($name, $id)
+    public function __construct($name, $id, $message)
     {
         $this->application_id = $id;
         $this->userName = $name;
+        $this->message = $message;
     }
 
     /**
@@ -69,23 +72,17 @@ class NotifyAdministration extends Notification
         return [
             "name" => $this->userName,
             'applicationId' => $this->application_id,
-            "message" => "manager approved an application"
+            "message" => $this->message
         ];
     }
 
 
-    /**
-     * Get the array representation of the notification.
-     *
-     * @param  mixed  $notifiable
-     * @return array
-     */
     public function toArray($notifiable)
     {
         return [
             "name" => $this->userName,
             'applicationId' => $this->application_id,
-            "message" => "manager approved an application"
+            "message" => $this->message
         ];
     }
 }

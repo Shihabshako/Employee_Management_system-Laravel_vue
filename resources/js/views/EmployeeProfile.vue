@@ -301,12 +301,13 @@
 </template>
 
 <script>
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import ContentHeader from "../Components/ContentHeader.vue";
 export default {
   data() {
     return {
-      router: useRoute(),
+      router: useRouter(),
+      route: useRoute(),
       employeeDetails: {},
       roles: {},
       designations: {},
@@ -337,7 +338,7 @@ export default {
   methods: {
     async getEmployeeDetails() {
       await axios
-        .get("/api/employees/" + this.router.params.id)
+        .get("/api/employees/" + this.route.params.id)
         .then((response) => {
           if (response.data.success) {
             this.employeeDetails = response.data.data;
@@ -391,7 +392,7 @@ export default {
         .then((response) => {
           response = response.data.data;
           this.managers = response.filter(
-            (item) => item.id != this.router.params.id
+            (item) => item.id != this.route.params.id
           );
         })
         .catch((error) => {
@@ -403,7 +404,6 @@ export default {
         .put("/api/update-user/" + this.formData.id, this.formData)
         .then((response) => {
           if (response.data.success) {
-            localStorage["loggedInUserEmail"] = this.formData.email;
             toastr.success("Data updated successfully");
             this.isEdit = false;
             this.getEmployeeDetails();

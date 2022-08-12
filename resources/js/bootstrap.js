@@ -41,17 +41,17 @@ let access_token = localStorage.getItem("loggedInUserToken");
 //     enabledTransports: ["ws", "wss"],
 // });
 
-// window.Echo = new Echo({
-//     broadcaster: "pusher",
-//     key: import.meta.env.VITE_PUSHER_APP_KEY,
-//     cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
-//     wsHost: window.location.hostname,
-//     wsPort: 6001,
-//     forceTLS: false,
-//     disableStats: true,
-//     auth: {
-//         headers: {
-//             Authorization: "Bearer " + access_token,
-//         },
-//     },
-// });
+window.Echo = new Echo({
+    broadcaster: "pusher",
+    key: import.meta.env.VITE_PUSHER_APP_KEY,
+    cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
+    wsHost: window.location.hostname,
+    wsPort: 6001,
+    forceTLS: false,
+    disableStats: true,
+    auth: {
+        headers: {
+            Authorization: "Bearer " + access_token,
+        },
+    },
+});

@@ -12,10 +12,6 @@ import LeaveStatus from "../views/LeaveStatus.vue";
 import NoPermission from "../views/NoPermission.vue";
 import ApplicationDetails from "../views/ApplicationDetails.vue";
 
-var role = localStorage.getItem("loggedInUserRole");
-var isManager =
-    localStorage.getItem("isLoggedInUserManager") == "true" ? true : false;
-
 const routes = [
     {
         path: "/",
@@ -32,6 +28,8 @@ const routes = [
         name: "Employees",
         component: Employees,
         beforeEnter: (to, from, next) => {
+            let role = localStorage.getItem("loggedInUserRole");
+
             if (role == "HR" || role == "Admin") {
                 next();
             } else {
@@ -58,7 +56,9 @@ const routes = [
         path: "/employee-profile/:id",
         name: "Employee Profile",
         component: EmployeeProfile,
+        props: true,
         beforeEnter: (to, from, next) => {
+            let role = localStorage.getItem("loggedInUserRole");
             if (role == "HR" || role == "Admin") {
                 next();
             } else {
@@ -96,6 +96,8 @@ const routes = [
 ];
 
 const router = createRouter({
+    mode: "history",
+    base: "./",
     history: createWebHistory("/"),
     routes,
 });
