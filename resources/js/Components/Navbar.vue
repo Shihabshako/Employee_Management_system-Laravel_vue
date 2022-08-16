@@ -152,12 +152,11 @@ export default {
     this.getNotifications();
     Echo.private("App.Models.User." + this.userId).notification(
       (notification) => {
-        alert("you have a new notification");
+        if (notification) toastr.info("you have a new notification");
         let data = notification;
         data["read_at"] = null;
         this.notificationList.push(data);
         this.unreadNotifications();
-        console.log("new notification arrived", notification);
       }
     );
   },

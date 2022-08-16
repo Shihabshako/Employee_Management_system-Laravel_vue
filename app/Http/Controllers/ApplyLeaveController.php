@@ -156,6 +156,7 @@ class ApplyLeaveController extends Controller
                 $application->update([
                     "approved_by_manager" => 1
                 ]);
+
                 $administration = User::all()->filter(function ($user) {
                     if ($user->role_id != 3) {
                         return $user;
@@ -208,7 +209,7 @@ class ApplyLeaveController extends Controller
 
                 $user = User::whereId($application->user_id)->first();
 
-                //notify administration 
+                //notify users 
                 Notification::send($user, new NotifyApplier('', $application->id, 'Application Approved'));
 
                 return sendSuccessResponse($application, 'Data retrieved successfully', 200);
@@ -231,7 +232,7 @@ class ApplyLeaveController extends Controller
 
                 $user = User::whereId($application->user_id)->first();
 
-                //notify administration 
+                //notify user 
                 Notification::send($user, new NotifyApplier('', $application->id, 'Application Approved'));
 
                 return sendSuccessResponse($application, 'Data retrieved successfully', 200);
