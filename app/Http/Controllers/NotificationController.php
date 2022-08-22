@@ -11,7 +11,7 @@ class NotificationController extends Controller
     public function notificationPerUser($id)
     {
         try {
-            $notifications = DB::table('notifications')->where("notifiable_id", $id)->get();
+            $notifications = DB::table('notifications')->where("notifiable_id", $id)->orderBy("created_at", "desc")->get()->take(10);
             if ($notifications) {
                 return sendSuccessResponse($notifications, 'Data retrieved successfully', 200);
             } else {
@@ -26,7 +26,7 @@ class NotificationController extends Controller
     {
         try {
             $notifications = DB::table('notifications')->where("notifiable_id", $id)->update(["read_at" => Carbon::now()->toDateTimeString()]);
-            $notifications = DB::table('notifications')->where("notifiable_id", $id)->get();
+            $notifications = DB::table('notifications')->where("notifiable_id", $id)->orderBy("created_at", "desc")->get()->take(10);
             if ($notifications) {
                 return sendSuccessResponse($notifications, 'Data retrieved successfully', 200);
             } else {

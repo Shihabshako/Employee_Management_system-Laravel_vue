@@ -155,7 +155,11 @@ export default {
         if (notification) toastr.info("you have a new notification");
         let data = notification;
         data["read_at"] = null;
-        this.notificationList.push(data);
+
+        if (this.notificationList.length >= 10) {
+          this.notificationList.pop();
+        }
+        this.notificationList.unshift(data);
         this.unreadNotifications();
       }
     );

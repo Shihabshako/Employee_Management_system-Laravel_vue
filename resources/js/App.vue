@@ -1,11 +1,11 @@
 <template>
   <div>
-    <Navbar v-if="!isUrlLogin()" />
-    <Sidebar v-if="!isUrlLogin()" />
+    <Navbar v-if="!checkUrl" />
+    <Sidebar v-if="!checkUrl" />
 
     <router-view :key="$route.path" />
 
-    <Footer v-if="!isUrlLogin()" />
+    <Footer v-if="!checkUrl" />
   </div>
 </template>
 <script>
@@ -22,8 +22,8 @@ export default {
       message: [],
     };
   },
-  methods: {
-    isUrlLogin() {
+  computed: {
+    checkUrl() {
       const router = useRouter();
       let status = false;
 
